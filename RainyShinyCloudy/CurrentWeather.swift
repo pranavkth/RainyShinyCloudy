@@ -62,7 +62,7 @@ class CurrentWeather{
                 let result = response.result
             switch result {
             case .success:
-                print("success in first")
+                print("success")
                 
                 // JSON PARSING STARTS HERE.
                 guard let dict = result.value as? Dictionary<String,Any> else {print("error")
