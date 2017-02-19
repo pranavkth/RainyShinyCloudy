@@ -82,10 +82,10 @@
                                         <rect key="frame" x="0.0" y="28" width="375" height="80"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="cyX-mO-CDA" id="akA-rX-0T1">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="80"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="79.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="YPY-Td-gtk">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="YPY-Td-gtk">
                                                     <rect key="frame" x="8" y="14" width="50" height="50"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="50" id="SqX-mP-xAJ"/>
@@ -141,6 +141,13 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                        <connections>
+                                            <outlet property="dayLabel" destination="JqD-Aq-urW" id="TuM-uD-Yuo"/>
+                                            <outlet property="highTempLabel" destination="eHK-2J-XkG" id="IA4-RE-nHE"/>
+                                            <outlet property="lowTempLabel" destination="MSw-vl-YtG" id="gNP-nU-kMJ"/>
+                                            <outlet property="thumb" destination="YPY-Td-gtk" id="HTJ-Pb-6uV"/>
+                                            <outlet property="weatherTypeLabel" destination="goG-dX-D2p" id="ryp-Jg-zl3"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>

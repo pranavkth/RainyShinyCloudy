@@ -25,13 +25,15 @@ class Forecast {
         return
         }
         
-        self._highTemp = String(max - 273.15)
+        self._highTemp = String(round(max - 273.15))
+        
         
         guard let min = temp["min"] as? Double else{print ("could not bind min temp in init")
             return
         }
         
-        self._lowTemp = String(min - 273.15)
+        self._lowTemp = String(round(min - 273.15))
+        
         
         guard let weather = weatherDict["weather"] as? [Dictionary<String,Any>] else {
             print ("could not bind weather in init")

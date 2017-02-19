@@ -19,7 +19,6 @@ class WeatherVC: UIViewController,UITableViewDelegate,UITableViewDataSource {
     @IBOutlet weak var tableView: UITableView!
     
     var currentWeather = CurrentWeather()
-
     var forecasts = [Forecast]()
     
     
@@ -28,7 +27,7 @@ class WeatherVC: UIViewController,UITableViewDelegate,UITableViewDataSource {
         tableView.delegate = self
         tableView.dataSource = self
         self.downloadForecastData {
-            
+            self.tableView.reloadData()
         }
         currentWeather.downloadWeatherDetails(){
             self.updateMainUI()
@@ -75,13 +74,20 @@ class WeatherVC: UIViewController,UITableViewDelegate,UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 16
+        return forecasts.count - 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // to change.
-        let cell = tableView.dequeueReusableCell(withIdentifier:"WeatherCell" , for: indexPath)
-        return cell
+        if let cell = tableView.dequeueReusableCell(withIdentifier:"WeatherCell" , for: indexPath) as? WeatherCell {
+            let forecast = forecasts[indexPath.row + 1]
+            cell.configureCell(forecast: forecast)
+            return cell
+        }
+        else{
+            return WeatherCell()
+            
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
