@@ -2,14 +2,16 @@
 //  WeatherVC.swift
 //  RainyShinyCloudy
 //
-//  Created by pranav gupta on 15/02/17.
+//  Created by Pranav Gupta on 15/02/17.
 //  Copyright © 2017 Pranav gupta. All rights reserved.
 //
 
 import UIKit
 import Alamofire
+import CoreLocation
 
-class WeatherVC: UIViewController,UITableViewDelegate,UITableViewDataSource {
+
+class WeatherVC: UIViewController,UITableViewDelegate,UITableViewDataSource,CLLocationManagerDelegate {
     
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var currentTempLabel: UILabel!
@@ -17,6 +19,10 @@ class WeatherVC: UIViewController,UITableViewDelegate,UITableViewDataSource {
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var currentWeatherLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
+    
+    let locationManager = CLLocationManager()
+    var currentLocation : CLLocation!
+    
     
     var currentWeather = CurrentWeather()
     var forecasts = [Forecast]()
@@ -26,14 +32,45 @@ class WeatherVC: UIViewController,UITableViewDelegate,UITableViewDataSource {
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
-        self.downloadForecastData {
-            self.tableView.reloadData()
-        }
-        currentWeather.downloadWeatherDetails(){
-            self.updateMainUI()
-        }
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
         
+        // when in use authorisation works only when the app is running and active on the screen.
+        // alwaysauthorised is required in apps such as google maps which can pull the location data even when the app is not in use.
         
+        locationManager.requestWhenInUseAuthorization()
+        
+        // this will start monitoring significant location changes.
+        
+        locationManager.startMonitoringSignificantLocationChanges()
+        }
+    
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+        self.locationAuthStatus()
+    }
+    // function to check authorisation.
+    
+    func locationAuthStatus(){
+        if CLLocationManager.authorizationStatus() == .authorizedWhenInUse {
+            currentLocation = locationManager.location
+            Location.sharedInstance.latitude = currentLocation.coordinate.latitude
+            Location.sharedInstance.longitude = currentLocation.coordinate.longitude
+            print(Location.sharedInstance.latitude, Location.sharedInstance.longitude, "are the coordinates")
+            currentWeather.downloadWeatherDetails(){
+                self.downloadForecastData {
+                    self.updateMainUI()
+                    self.tableView.reloadData()
+                }
+            }
+
+        }
+        else
+        {
+            locationManager.requestWhenInUseAuthorization()
+            locationAuthStatus()
+        }
     }
     
     // function to download forecast data.
@@ -74,6 +111,9 @@ class WeatherVC: UIViewController,UITableViewDelegate,UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        // Returns one row less than the 16 rows returned by api- excludes the one containing today's data.
+        
+        
         return forecasts.count - 1
     }
     

@@ -56,6 +56,9 @@ class CurrentWeather{
     func downloadWeatherDetails(completed: @escaping DownloadComplete) {
         // IN INFO.PLIST file use App Transport Security Settings and update key allow arbitrary loads to YES.
         
+        print("downloadweather ", Location.sharedInstance.latitude,Location.sharedInstance.longitude
+        )
+        
         let currentWeatherUrl = URL(string: CURRENT_WEATHER_URL)!
         Alamofire.request(currentWeatherUrl).responseJSON { response in
             // HERE IT RETURNS RESPONSE WHOSE RESULT IS SUCCESS AND VALUE IS A OBJECT.
