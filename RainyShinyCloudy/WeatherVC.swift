@@ -21,12 +21,23 @@ class WeatherVC: UIViewController,UITableViewDelegate,UITableViewDataSource,CLLo
     @IBOutlet weak var tableView: UITableView!
     
     let locationManager = CLLocationManager()
-    var currentLocation : CLLocation!
     
     
     var currentWeather = CurrentWeather()
     var forecasts = [Forecast]()
     
+    
+    func locationManager(_ manager: CLLocationManager,
+                         didUpdateLocations locations: [CLLocation])
+    {
+        print(locations.count,"count")
+        let latestLocation: CLLocation = locations[locations.count - 1]
+        Location.sharedInstance.latitude = latestLocation.coordinate.latitude
+        Location.sharedInstance.longitude = latestLocation.coordinate.longitude
+        self.locationAuthStatus()
+        locationManager.stopUpdatingLocation()
+        locationManager.delegate = nil
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,24 +50,24 @@ class WeatherVC: UIViewController,UITableViewDelegate,UITableViewDataSource,CLLo
         // alwaysauthorised is required in apps such as google maps which can pull the location data even when the app is not in use.
         
         locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
         
         // this will start monitoring significant location changes.
-        
         locationManager.startMonitoringSignificantLocationChanges()
+        
+
         }
     
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
-        self.locationAuthStatus()
+        
     }
     // function to check authorisation.
     
     func locationAuthStatus(){
+        print("inside")
         if CLLocationManager.authorizationStatus() == .authorizedWhenInUse {
-            currentLocation = locationManager.location
-            Location.sharedInstance.latitude = currentLocation.coordinate.latitude
-            Location.sharedInstance.longitude = currentLocation.coordinate.longitude
             print(Location.sharedInstance.latitude, Location.sharedInstance.longitude, "are the coordinates")
             currentWeather.downloadWeatherDetails(){
                 self.downloadForecastData {
@@ -64,7 +75,6 @@ class WeatherVC: UIViewController,UITableViewDelegate,UITableViewDataSource,CLLo
                     self.tableView.reloadData()
                 }
             }
-
         }
         else
         {
