@@ -19,12 +19,16 @@ class WeatherVC: UIViewController,UITableViewDelegate,UITableViewDataSource,CLLo
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var currentWeatherLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     let locationManager = CLLocationManager()
     
     
     var currentWeather = CurrentWeather()
     var forecasts = [Forecast]()
+    
+    
+    
     
     
     func locationManager(_ manager: CLLocationManager,
@@ -36,7 +40,6 @@ class WeatherVC: UIViewController,UITableViewDelegate,UITableViewDataSource,CLLo
         Location.sharedInstance.longitude = latestLocation.coordinate.longitude
         self.locationAuthStatus()
         locationManager.stopUpdatingLocation()
-        locationManager.delegate = nil
     }
     
     override func viewDidLoad() {
@@ -59,16 +62,14 @@ class WeatherVC: UIViewController,UITableViewDelegate,UITableViewDataSource,CLLo
         }
     
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(true)
-        
-    }
     // function to check authorisation.
     
     func locationAuthStatus(){
         print("inside")
         if CLLocationManager.authorizationStatus() == .authorizedWhenInUse {
             print(Location.sharedInstance.latitude, Location.sharedInstance.longitude, "are the coordinates")
+            self.activityIndicator.isHidden = false
+            self.activityIndicator.startAnimating()
             currentWeather.downloadWeatherDetails(){
                 self.downloadForecastData {
                     self.updateMainUI()
@@ -155,6 +156,8 @@ class WeatherVC: UIViewController,UITableViewDelegate,UITableViewDataSource,CLLo
         locationLabel.text = currentWeather.cityName
         currentWeatherLabel.text = currentWeather.weatherType
         currentWeatherImage.image = UIImage(named: currentWeather.weatherType)
+        self.activityIndicator.stopAnimating()
+        self.activityIndicator.isHidden = true
         }
     
     
